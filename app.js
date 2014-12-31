@@ -3,6 +3,7 @@
 var request = require('request');
 var fs = require('fs');
 var path = require('path');
+var config = require('./config.js');
 
 function fetch() {
   var uri = 'http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1';
@@ -13,10 +14,8 @@ function fetch() {
       var images = data.images;
 
       images.forEach(function (image) {
-        var idx = image.url.lastIndexOf('.');
-        var subfix = image.url.substr(idx);
-        var dist = path.resolve(__dirname, '../../../Pictures/bing-wallpapers');
-        var img = path.join(dist, image.fullstartdate + subfix);
+        var ext = path.extname(image.url);
+        var img = path.join(config.path.pictures, image.fullstartdate + ext);
 
         if (!fs.existsSync(img)) {
           request(image.url).pipe(fs.createWriteStream(img));
