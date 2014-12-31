@@ -1,0 +1,9 @@
+{
+  "name": "bing_wallpaper",
+  "version": "0.0.0",
+  "description": "daily bing wallpaper",
+  "main": "app.js",
+  "dependencies": {
+    "request": "^2.51.0"
+  }
+}
