@@ -1,32 +1,36 @@
 //http://stackoverflow.com/questions/10639914/is-there-a-way-to-get-bings-photo-of-the-day
 
-var request = require('request');
-var fs = require('fs');
-var path = require('path');
-var config = require('./config.js');
+var fs = require('fs')
+var path = require('path')
 
-function fetch() {
-  var uri = 'http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1';
+var request = require('request')
 
-  request(uri, function (error, response, body) {
+function fetch(){
+  var uri = 'http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1'
+
+  request(uri, function(error, response, body){
     try {
-      var data = JSON.parse(body);
-      var images = data.images;
+      var data = JSON.parse(body)
+      var images = data.images
 
-      images.forEach(function (image) {
-        var ext = path.extname(image.url);
-        var img = path.join(config.path.pictures, image.fullstartdate + ext);
+      var pictures = path.join(__dirname, '../../Pictures/bing-wallpapers/')
+
+      images.forEach(function(image){
+        var ext = path.extname(image.url).split('&')[0]
+        var img = path.join(pictures, image.fullstartdate + ext)
 
         if (!fs.existsSync(img)) {
-          request(image.url).pipe(fs.createWriteStream(img));
+          request(`https://www.bing.com${image.url}`).pipe(
+            fs.createWriteStream(img)
+          )
         } else {
-          console.log('already exists');
+          console.log('already exists')
         }
-      });
+      })
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  });
+  })
 }
 
-fetch();
+fetch()
